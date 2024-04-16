@@ -4,7 +4,7 @@
     <title>Zrozumilo Map Editor</title>
 </head>
 <body>
-    <canvas id="gridCanvas" width="800" height="800"></canvas>
+    <canvas id="gridCanvas" width="600" height="600"></canvas>
     <button id="createBtn">Create</button>
     
     <script>
@@ -12,7 +12,7 @@
         const ctx = canvas.getContext('2d');
         const createBtn = document.getElementById('createBtn');
 
-        const gridSize = 10;
+        const gridSize = 20;
         const cellSize = canvas.width / gridSize;
 
         let grid = [];
