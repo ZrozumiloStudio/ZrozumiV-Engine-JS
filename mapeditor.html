@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Zrozumilo Map Editor</title>
+    <title>Grid Editor</title>
 </head>
 <body>
+    <input type="file" id="fileInput">
     <canvas id="gridCanvas" width="600" height="600"></canvas>
     <button id="createBtn">Create</button>
     
@@ -11,6 +12,8 @@
         const canvas = document.getElementById('gridCanvas');
         const ctx = canvas.getContext('2d');
         const createBtn = document.getElementById('createBtn');
+        const fileInput = document.getElementById('fileInput');
+        const loadBtn = document.getElementById('loadBtn');
 
         const gridSize = 20;
         const cellSize = canvas.width / gridSize;
@@ -19,7 +22,7 @@
         for (let i = 0; i < gridSize; i++) {
             grid[i] = [];
             for (let j = 0; j < gridSize; j++) {
-                grid[i][j] = 0;
+                grid[i][j] = 0; // 0 represents empty cell
             }
         }
 
@@ -54,11 +57,27 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'ZrozEMap.txt';
+            a.download = 'ZrozEMAP.txt';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        });
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                const lines = content.trim().split('\n');
+                grid = lines.map(line => line.match(/\d/g).map(Number));
+                drawGrid();
+            };
+            reader.readAsText(file);
+        });
+
+        loadBtn.addEventListener('click', function() {
+            fileInput.click();
         });
 
         drawGrid();
