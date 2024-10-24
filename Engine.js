@@ -119,30 +119,34 @@
             }
 
             // Raycasting
-            for (let i = 0; i < canvas.width; i++) {
-                const angle = player.direction - Math.PI / 6 + (i / canvas.width) * (Math.PI / 3);
-                let rayX = player.x;
-                let rayY = player.y;
-                let rayDistance = 0;
+for (let i = 0; i < canvas.width; i++) {
+    const angle = player.direction - Math.PI / 6 + (i / canvas.width) * (Math.PI / 3);
+    let rayX = player.x;
+    let rayY = player.y;
+    let rayDistance = 0;
 
-                while (rayDistance < rayLength) {
-                    rayX += Math.cos(angle);
-                    rayY += Math.sin(angle);
+    while (rayDistance < rayLength) {
+        rayX += Math.cos(angle);
+        rayY += Math.sin(angle);
 
-                    if (map[Math.floor(rayY / 50)][Math.floor(rayX / 50)] === 1) {
-                        break;
-                    }
+        if (map[Math.floor(rayY / 50)][Math.floor(rayX / 50)] === 1) {
+            break; 
+        }
+        rayDistance += 1;
+    }
 
-                    rayDistance += 1;
-                }
+    const lineHeight = (canvas.height / rayDistance) * 60;
 
-                var lineHeight = (canvas.height / rayDistance) * 70;
-                const brightness = 1 - Math.min(1, rayDistance / rayLength); // Простий розрахунок яскравості
-                const wallColor = `rgba(0, 0, 0, ${brightness})`; //колір стіни
+    const wallColor = `rgba(50, 50, 50, ${1 - Math.min(1, rayDistance / rayLength)})`;
+    ctx.fillStyle = wallColor;
+    ctx.fillRect(i, (canvas.height - lineHeight) / 2, 1, lineHeight);
 
-                ctx.fillStyle = wallColor;
-                ctx.fillRect(i, (canvas.height - lineHeight) / 2, 1, lineHeight);
-            }
+    const shadowIntensity = Math.max(0.3, 1 - rayDistance / rayLength); // Интенсивность тени
+    const shadowLength = lineHeight * 0.5; 
+
+    ctx.fillStyle = `rgba(0, 0, 0, ${shadowIntensity * 0.5})`; 
+    ctx.fillRect(i, (canvas.height + lineHeight) / 2, 1, shadowLength); 
+}
 
             // Малювання гравця
             // ctx.fillStyle = 'red';
@@ -162,9 +166,6 @@
 			console.log(rayLength)
         }
 		
-		function mapaa() {
-            map[1, 2, 3]--;
-        }
 		
         // Функція головного циклу гри
         function gameLoop() {
