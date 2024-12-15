@@ -63,6 +63,9 @@
                 player.direction += player.rotationSpeed;
             }
 
+const wallTexture = new Image();
+wallTexture.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT04xcGOLFDpHCO-s636hlbP5t7_Ua5k_vfYQ&s';
+		
 // Raycasting
 for (let i = 0; i < canvas.width; i++) {
     const angle = player.direction - Math.PI / 6 + (i / canvas.width) * (Math.PI / 3);
@@ -82,16 +85,21 @@ for (let i = 0; i < canvas.width; i++) {
 
     const lineHeight = (canvas.height / rayDistance) * 60;
 
-    const wallColor = `rgba(50, 50, 50, ${1 - Math.min(1, rayDistance / rayLength)})`;
-    ctx.fillStyle = wallColor;
-    ctx.fillRect(i, (canvas.height - lineHeight) / 2, 1, lineHeight);
+    const fogIntensity = 1 - Math.min(1, rayDistance / rayLength);
+    ctx.globalAlpha = fogIntensity; 
 
-    const shadowIntensity = Math.max(0.3, 1 - rayDistance / rayLength); // Reflections
+    const textureX = Math.floor((rayX % 50) / 50 * wallTexture.width); // Вычисляем горизонтальное смещение текстуры
+    ctx.drawImage(wallTexture, textureX, 0, 1, wallTexture.height, i, (canvas.height - lineHeight) / 2, 1, lineHeight);
+
+    ctx.globalAlpha = 1.0;
+
+    const shadowIntensity = Math.max(0.3, fogIntensity); // Используем интенсивность тумана для тени
     const shadowLength = lineHeight * 0.5; 
 
     ctx.fillStyle = `rgba(0, 0, 0, ${shadowIntensity * 0.5})`; 
     ctx.fillRect(i, (canvas.height + lineHeight) / 2, 1, shadowLength); 
 }
+
 
             // Draw player
             // ctx.fillStyle = 'red';
