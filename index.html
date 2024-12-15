@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        canvas {
+            border: 1px solid black;
+            display: block;
+            margin: 20px auto;
+        }
+		
+       .button {
+           top:50%;
+           background-color:#0a0a23;
+           color: #fff;
+	       border:none;
+	       border-radius:5px;
+	       min-height:30px; 
+           min-width: 120px;
+        }
+
+.button:hover {
+      background-color:purple;
+      transition: 0.7s;
+  }
+
+.button:active {
+    background-color: #ffbf00;
+	transition: 0.1s;
+}
+
+    </style>
+    <title>Zrozumilo Engine</title>
+</head>
+<body>
+    <canvas id="gameCanvas" width="1500" height="630"></canvas>
+	<button class = "button" onclick = "removefog()">remove fog</button>
+	<button class = "button" onclick = "addfog()">add fog</button>
+
+    <script src = "engine.js"></script>
+</body>
+</html>
