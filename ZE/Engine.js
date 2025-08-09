@@ -166,6 +166,8 @@ function update() {
     const wallTexture = new Image();
     wallTexture.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT04xcGOLFDpHCO-s636hlbP5t7_Ua5k_vfYQ&s';
 
+	const zBuffer = [];
+
     for (let i = 0; i < canvas.width; i++) {
         const angle = player.direction - Math.PI / 6 + (i / canvas.width) * (Math.PI / 3);
         let rayX = player.x;
@@ -182,6 +184,7 @@ function update() {
             rayDistance += 1;
         }
 
+		zBuffer[i] = rayDistance;
         let lineHeight = (canvas.height / rayDistance) * 60;
 
         const verticalOffset = Math.tan(player.verticalAngle) * canvas.height / 2;
@@ -201,6 +204,37 @@ function update() {
         ctx.fillStyle = `rgba(0, 0, 0, ${shadowIntensity * 0.5})`; 
         ctx.fillRect(i, drawY + lineHeight, 1, shadowLength); 
     }
+
+sprites.forEach(sprite => {
+    const dx = sprite.x - player.x;
+    const dy = sprite.y - player.y;
+
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const angleToSprite = Math.atan2(dy, dx);
+
+    let angleDifference = angleToSprite - player.direction;
+    while (angleDifference < -Math.PI) angleDifference += 2 * Math.PI;
+    while (angleDifference > Math.PI) angleDifference -= 2 * Math.PI;
+
+    const fov = Math.PI / 3;
+    if (Math.abs(angleDifference) < fov / 2) {
+        const screenX = (0.5 + angleDifference / fov) * canvas.width;
+        const size = (canvas.height / distance) * 60;
+        const drawY = (canvas.height - size) / 2 + Math.tan(player.verticalAngle) * canvas.height / 2;
+
+        const spriteLeft = Math.floor(screenX - size / 2);
+        const spriteRight = Math.floor(screenX + size / 2);
+
+        for (let x = spriteLeft; x < spriteRight; x++) {
+            if (x >= 0 && x < canvas.width && distance < zBuffer[x]) {
+                const sx = Math.floor((x - spriteLeft) / (spriteRight - spriteLeft) * spriteImage.width);
+                ctx.globalAlpha = 1 - Math.min(1, distance / rayLength);
+                ctx.drawImage(spriteImage, sx, 0, 1, spriteImage.height, x, drawY, 1, size);
+                ctx.globalAlpha = 1.0;
+            }
+        }
+    }
+});
 }
 
 function removefog() {
@@ -212,6 +246,13 @@ function addfog() {
     rayLength -= 20;
     console.log(rayLength);
 }
+
+const spriteImage = new Image();
+spriteImage.src = "palm.png";
+
+const sprites = [
+    { x: 150, y: 120 }
+];
 
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
