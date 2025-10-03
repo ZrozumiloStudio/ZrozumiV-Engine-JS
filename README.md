@@ -9,5 +9,5 @@
   <img src="https://img.shields.io/github/last-commit/ZrozumiloStudio/ZrozumiV-Engine-JS?color=black">
   <img src="https://img.shields.io/github/contributors/ZrozumiloStudio/ZrozumiV-Engine-JS?color=black">
   <br>
-  A simple raycasting engine
+  A simple raycasting engine.
 </p>
